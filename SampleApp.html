@@ -1,0 +1,122 @@
+<template name="layout">
+  <div class="container">
+    <header>
+      {{> nav }}
+    </header>
+    {{> yield}}
+  </div>
+</template>
+
+
+<!-- 
+    Navbar example customized as suggested in http://robertdickert.com/blog/2014/05/09/set-up-navigation-with-iron-router-and-bootstrap/
+-->
+<template name='nav'>
+  <nav class="navbar navbar-default" role="navigation">
+    <div class="container-fluid">
+      <!-- Brand and toggle get grouped for better mobile display -->
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        {{> navBrand}}
+      </div>
+      <!-- Collect the nav links, forms, and other content for toggling -->
+      <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+        <ul class="nav navbar-nav">
+          {{> navItems}}
+        </ul>
+      </div><!-- /.navbar-collapse -->
+    </div><!-- /.container-fluid -->
+  </nav>
+</template>
+
+<template name="navBrand">
+  <a class="navbar-brand" href="{{ pathFor 'home' }}">Demo</a>
+</template>
+
+<template name='navItems'>
+  <li class="{{ activeIfTemplateIs 'lendlib' }}">
+    <a href="{{ pathFor 'lendlib'}}">Lending List</a>
+  </li>
+  <li class="{{ activeIfTemplateIs 'map' }}">
+    <a href="{{pathFor 'map'}}">Map</a>
+  </li>
+</template>
+
+<template name="home">
+    <h1> Demo Application </h1>
+</template>
+
+<template name="lendlib">
+  <div id="lendlib" class="container">
+    <div id="categories-container" class="container">
+      {{> categories}}
+    </div>
+    <div id="list">
+      {{> list}}
+    </div>
+  </div>
+</template>
+
+<template name="categories">
+  <div id="categories" class="btn-group">
+    {{#if new_cat}}
+      <div class="category form-group" id="newCat">
+        <input type="text" id="add-category" class="form-control" value="" />
+      </div>
+    {{else}}
+      <div class="category btn btn-primary" id="btnNewCat">
+        <span class="glyphicon glyphicon-plus"></span>
+      </div>
+    {{/if}}
+    {{#each lists}}
+    <div class="category btn {{list_status}}" id="{{_id}}">
+        {{Category}}
+      </div>
+    {{/each}}
+  </div>
+</template>
+
+<template name="list">
+  <div id="lending_list" class="list-group">
+    {{#each items}}
+      <div class="lending_item list-group-item">
+        <button type="button" class="close delete_item" id="{{Name}}">x</button>
+        <img id='myImage' src="{{Picture}}">
+        {{Name}}
+        {{#if lendee_editing}}
+          <input type="text" id="edit_lendee" class="span-2" value=""/>
+        {{else}}
+          <div class="lendee label {{LendClass}}">
+            {{Lendee}}
+          </div>
+         {{/if}}
+         <a href="#" class="take_picture">
+             <span class="glyphicon glyphicon-camera"></span>
+         </a>
+      </div>
+    {{/each}}
+    {{#if list_selected}}
+      <div class="list-group-item" id="btnAddItem">
+        <span class="glyphicon glyphicon-plus"></span>
+        {{#if list_adding}}
+          <input class="span-4" id="item_to_add" size="32" type="text">
+        {{/if}}
+      </div>
+    {{/if}}
+  </div>
+</template>
+
+<template name="map">  
+    <div class="map-container">
+        {{#unless geolocationError}}
+            {{> googleMap name="map" options=mapOptions}}
+        {{else}}
+            Geolocation failed: {{geolocationError}}
+        {{/unless}}
+    </div>
+</template> 
